@@ -1,0 +1,12 @@
+---
+- name: Terminate EC2 instance
+  hosts: localhost
+  connection: local
+  gather_facts: no
+
+  tasks:
+    - name: Terminate instance
+      amazon.aws.ec2_instance:
+        region: ap-south-1
+        instance_ids: i-00ff71d6109c80b40
+        state: terminated
