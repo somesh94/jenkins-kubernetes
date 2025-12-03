@@ -1,0 +1,46 @@
+---
+- name: Launch EC2 Instance in AWS
+  hosts: localhost
+  connection: local
+  gather_facts: false
+
+  vars:
+    region: ap-south-1
+    ami_id: ami-03695d52f0d883f65      # Ubuntu 22.04 for ap-south-1
+    instance_type: t3.micro
+    key_name: new-ubuntu-key
+    security_group_name: my-ansible-sg
+    subnet_id: subnet-00fe32023785e3631
+
+  tasks:
+    - name: Create security group
+      amazon.aws.ec2_group:
+        name: "{{ security_group_name }}"
+        description: "Security group for EC2"
+        region: "{{ region }}"
+        rules:
+          - proto: tcp
+            from_port: 22
+            to_port: 22
+            cidr_ip: 0.0.0.0/0
+        state: present
+      register: sg
+
+    - name: Launch EC2 instance
+      amazon.aws.ec2_instance:
+        name: my-ec2-instance
+        region: "{{ region }}"
+        image_id: "{{ ami_id }}"
+        instance_type: "{{ instance_type }}"
+        key_name: "{{ key_name }}"
+        vpc_subnet_id: "{{ subnet_id }}"
+        security_groups:
+          - "{{ sg.group_name }}"
+        wait: yes
+        count: 1
+      register: ec2
+
+    - name: Show instance details
+      debug:
+        var: ec2
+
