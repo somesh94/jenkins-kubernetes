@@ -8,5 +8,5 @@
     - name: Terminate instance
       amazon.aws.ec2_instance:
         region: ap-south-1
-        instance_ids: i-00ff71d6109c80b40
+        instance_ids: i-015881e8d3fe24509
         state: terminated
