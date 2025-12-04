@@ -1,0 +1,25 @@
+---
+- name: Deploy containers on Docker server
+  hosts: docker
+  become: yes
+  tasks:
+    - name: Pull Ubuntu image
+      community.docker.docker_image:
+        name: ubuntu
+        source: pull
+
+    - name: Create container 1
+      community.docker.docker_container:
+        name: ubuntu-container-1
+        image: ubuntu
+        command: sleep 3600
+        state: started
+        restart_policy: unless-stopped
+
+    - name: Create container 2
+      community.docker.docker_container:
+        name: ubuntu-container-2
+        image: ubuntu
+        state: started
+        restart_policy: unless-stopped
+
